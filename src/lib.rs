@@ -1,5 +1,4 @@
 use std::io::{self};
-use csv;
 
 type MyResult = Result<(), Box<dyn std::error::Error>>;
 
@@ -8,8 +7,9 @@ pub fn run() -> MyResult {
     let input = io::stdin();
     let input = io::BufReader::new(input.lock());
     let mut rdr = csv::Reader::from_reader(input);
-    let out = io::stdout();
-    let mut wtr = csv::Writer::from_writer(out.lock());
+    let stdout = io::stdout();
+    let out = io::BufWriter::new(stdout.lock());
+    let mut wtr = csv::Writer::from_writer(out);
     let header = rdr.headers()?.clone();
     wtr.write_record(&header)?;
     for result in rdr.records() {
